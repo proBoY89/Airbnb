@@ -18,8 +18,9 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const Passport_local = require("passport-local");
 const User = require("./models/user.js");
+const { error } = require("console");
 
-// const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+
 const dbUrl = process.env.ATLASDB_URL;
 
 main()
@@ -49,16 +50,17 @@ const store = MongoStore.create({
   touchAfter: 24 * 3600,
 });
 
-store.on("error", () => {
+store.on("error", (err) => {
   console.log("Error in MONGO SESSION STORE", err);
 });
+
 
 const sessionOptions = {
   store,
   secret: process.env.SECRET,
   resave: "false",
   saveUninitialized: "true",
-  Cookie: {
+  cookie: {
     expires: Date.now() + 7 * 24 * 60 * 1000,
     maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true,
